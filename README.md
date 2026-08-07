@@ -17,11 +17,11 @@ npm install
 ```
 ## Ejecucion
 
-# Desarrollo
+## Desarrollo
 ```
 npm run dev
 ```
-# Produccion
+## Produccion
 ```
 npm start
 ```
