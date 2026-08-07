@@ -14,17 +14,17 @@ API REST para gestion de recursos - Proyecto semestral Ingenieria Web II
 
 ```bash
 npm install
-
+```
 ## Ejecucion
 
 # Desarrollo
-```bash
+```
 npm run dev
-
+```
 # Produccion
-```bash
+```
 npm start
-
+```
 ## Endpoints
 
 | Metodo | Endpoint             | Descripcion                |
