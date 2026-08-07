@@ -1,0 +1,320 @@
+openapi: 3.0.3
+info:
+  title: Resource Management API
+  description: |
+    API REST para gestion de recursos institucionales.
+    Proyecto semestral Ingenieria Web II - UMB.
+  version: 1.0.0
+  contact:
+    name: Juan Esteban Cabral Bautista
+    email: juan.cabral@umb.edu.co
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Servidor de desarrollo local
+
+tags:
+  - name: General
+    description: Endpoints de informacion general
+  - name: Resources
+    description: Operaciones CRUD sobre recursos
+
+paths:
+  /hello:
+    get:
+      tags:
+        - General
+      summary: Endpoint de bienvenida
+      description: Retorna informacion basica de la API
+      operationId: helloApi
+      responses:
+        '200':
+          description: Respuesta exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Hello API - Resource Management System"
+                  version:
+                    type: string
+                    example: "1.0.0"
+                  timestamp:
+                    type: string
+                    format: date-time
+                  author:
+                    type: string
+                    example: "Juan Esteban Cabral Bautista"
+
+  /resources:
+    get:
+      tags:
+        - Resources
+      summary: Listar todos los recursos
+      description: Obtiene la lista completa de recursos disponibles
+      operationId: getAllResources
+      responses:
+        '200':
+          description: Lista de recursos obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Resource'
+                  count:
+                    type: integer
+                    example: 2
+                  timestamp:
+                    type: string
+                    format: date-time
+
+    post:
+      tags:
+        - Resources
+      summary: Crear nuevo recurso
+      description: Crea un nuevo recurso en el sistema
+      operationId: createResource
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceInput'
+      responses:
+        '201':
+          description: Recurso creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Resource'
+                  message:
+                    type: string
+                    example: "Resource created successfully"
+        '400':
+          description: Datos de entrada invalidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /resources/{id}:
+    get:
+      tags:
+        - Resources
+      summary: Obtener recurso por ID
+      description: Retorna un recurso especifico segun su ID
+      operationId: getResourceById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del recurso
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Recurso encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Resource'
+        '404':
+          description: Recurso no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Resources
+      summary: Actualizar recurso completo
+      description: Reemplaza todos los campos de un recurso existente
+      operationId: updateResource
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceInput'
+      responses:
+        '200':
+          description: Recurso actualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Resource'
+                  message:
+                    type: string
+                    example: "Resource updated successfully"
+        '400':
+          description: Datos invalidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Recurso no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    patch:
+      tags:
+        - Resources
+      summary: Actualizar recurso parcialmente
+      description: Actualiza campos especificos de un recurso
+      operationId: partialUpdateResource
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                quantity:
+                  type: integer
+                available:
+                  type: boolean
+      responses:
+        '200':
+          description: Recurso actualizado parcialmente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Resource'
+                  message:
+                    type: string
+                    example: "Resource partially updated"
+        '404':
+          description: Recurso no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Resources
+      summary: Eliminar recurso
+      description: Elimina un recurso del sistema
+      operationId: deleteResource
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Recurso eliminado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Resource'
+                  message:
+                    type: string
+                    example: "Resource deleted successfully"
+        '404':
+          description: Recurso no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Resource:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Laptop Dell XPS"
+        type:
+          type: string
+          example: "electronic"
+        quantity:
+          type: integer
+          example: 10
+        available:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date
+          example: "2026-01-15"
+      required:
+        - id
+        - name
+        - type
+
+    ResourceInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Monitor LG 27'"
+        type:
+          type: string
+          example: "electronic"
+        quantity:
+          type: integer
+          example: 5
+        available:
+          type: boolean
+          example: true
+      required:
+        - name
+        - type
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Resource not found"
